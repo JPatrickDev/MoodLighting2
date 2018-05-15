@@ -5,7 +5,7 @@ import math
 import pygame, sys
 from pygame.locals import *
 
-import pigpio
+
 
 
 class ColorResult:
@@ -24,12 +24,8 @@ class FadeShow:
     # fadeTime = 10
     #  c = [ColorResult(255, 0, 0), ColorResult(0, 255, 0), ColorResult(0, 0, 255),ColorResult(100, 100, 255),ColorResult(255, 0, 0), ColorResult(0, 255, 0), ColorResult(0, 0, 255)]
 
-    rPin = 17
-    gPin = 22
-    bPin = 24
-
-    pi = pigpio.pi()
-
+    def __init__(self,parent):
+        self.parent = parent
     def run(self, startedAt, pauseTime, fadeTime, colours):
         self.startTime = startedAt
         self.pauseTime = pauseTime
@@ -52,7 +48,7 @@ class FadeShow:
 
     def setColor(self, result):
         print("[" + str(round(result.r, 2)) + "," + str(round(result.g, 2)) + "," + str(round(result.b, 2)) + "]")
-        self.updateColor(result)
+        self.parent.updateColor(result)
 
     def stop(self):
         self.running = False
@@ -70,8 +66,4 @@ class FadeShow:
         b = self.interpolate(colorOne.b, colorTwo.b, step, stepMax)
         return ColorResult(r, g, b)
 
-    # Set the LEDs to the given colour result
-    def updateColor(self, result):
-        self.pi.set_PWM_dutycycle(self.rPin, result.r)
-        self.pi.set_PWM_dutycycle(self.gPin, result.g)
-        self.pi.set_PWM_dutycycle(self.bPin, result.b)
+

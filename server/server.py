@@ -46,6 +46,12 @@ class MoodLightingServer:
         print("Pinging clients")
         self.clients = util.sentToIPS("FADE", self.clients, 1202)
 
+    def setColor(self,color):
+        self.updateIPS()
+        self.currentShow = {"type" : "NONE"}
+        self.clients = util.sentToIPS("COLOUR " + str(color), self.clients, 1202)
+        print("Colour set")
+
     def stopShow(self):
         self.updateIPS()
         self.currentShow = {"type": "NONE"}
@@ -70,6 +76,12 @@ def start_fade():
 @app.route("/lights/stop")
 def stop_fade():
     lights.stopShow()
+    return str(time.time())
+
+@app.route("/lights/setColor")
+def set_colour():
+    c = request.args.get('c');
+    lights.setColor(c)
     return str(time.time())
 
 app.run('0.0.0.0',2806)
