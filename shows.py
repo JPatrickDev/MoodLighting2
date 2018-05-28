@@ -2,11 +2,6 @@ import time
 
 import math
 
-import pygame, sys
-from pygame.locals import *
-
-
-
 
 class ColorResult:
     r = 0
@@ -20,9 +15,6 @@ class ColorResult:
 
 
 class FadeShow:
-    # pauseTime = 2
-    # fadeTime = 10
-    #  c = [ColorResult(255, 0, 0), ColorResult(0, 255, 0), ColorResult(0, 0, 255),ColorResult(100, 100, 255),ColorResult(255, 0, 0), ColorResult(0, 255, 0), ColorResult(0, 0, 255)]
 
     def __init__(self,parent):
         self.parent = parent

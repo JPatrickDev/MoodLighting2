@@ -7,7 +7,7 @@ import requests
 
 import util
 from shows import FadeShow, ColorResult
-import pigpio
+#import pigpio
 
 
 class Client():
@@ -15,14 +15,18 @@ class Client():
     gPin = 22
     bPin = 24
 
-    pi = pigpio.pi()
+    def __init__(self):
+        with open('clientConfig.json') as f:
+            data = json.load(f)
+        self.id = data['clientID']
+        self.name = data['clientName']
+  #  pi = pigpio.pi()
 
     def connect(self, ip, port=2705):
         self.ip = ip
         self.socket = socket.socket()
-        # now connect to the web server on port 80
-        # - the normal http port
         self.socket.connect((ip, 2705))
+        self.socket.send((self.id + ":" + self.name).encode("utf8"))
         waiting = True
         while waiting:
             read, write, error = select.select([self.socket], [], [], 0)
@@ -78,9 +82,10 @@ class Client():
 
     # Set the LEDs to the given colour result
     def updateColor(self, result):
-        self.pi.set_PWM_dutycycle(self.rPin, result.r)
-        self.pi.set_PWM_dutycycle(self.gPin, result.g)
-        self.pi.set_PWM_dutycycle(self.bPin, result.b)
+        print(str(result.r) + ":" + str(result.g) + ":" + str(result.b))
+     #   self.pi.set_PWM_dutycycle(self.rPin, result.r)
+     #   self.pi.set_PWM_dutycycle(self.gPin, result.g)
+     #   self.pi.set_PWM_dutycycle(self.bPin, result.b)
 
 
-Client().connect("192.168.0.100")
+Client().connect("localhost")
