@@ -7,7 +7,7 @@ import threading
 from queue import Queue
 
 import time
-
+import os.path
 from flask import Flask, request
 
 import util
@@ -34,6 +34,7 @@ class MoodLightingServer:
         self.queue = Queue()
         self.groups = []
         self.currentShow = {"type": "NONE"}
+        self.loadGroups()
 
     def waitForConnections(self):
         serversocket = util.getServerSocket("0.0.0.0", 2705)
@@ -87,6 +88,7 @@ class MoodLightingServer:
         if group is not None:
             print("Adding to group")
             group.clients.append(id)
+            self.saveGroups()
 
     def getGroup(self, groupID):
         for g in self.groups:
@@ -99,7 +101,22 @@ class MoodLightingServer:
         # TODO Check unique
         self.groups.append(Group(id, name))
         print(self.groups)
+        self.saveGroups()
 
+    def saveGroups(self):
+        with open('groups.json', 'w') as outfile:
+            json.dump([x.__dict__ for x in lights.groups], outfile)
+
+    def loadGroups(self):
+        if not os.path.exists('groups.json'):
+            return
+        with open('groups.json') as f:
+            data = json.load(f)
+        for g in data:
+            grObj = Group(g['groupID'],g['name'])
+            for c in g['clients']:
+                grObj.clients.append(c)
+            self.groups.append(grObj)
 
 lights = MoodLightingServer().run()
 app = Flask(__name__)
@@ -157,4 +174,4 @@ def list_groups():
     return json.dumps([x.__dict__ for x in lights.groups])
 
 
-app.run('0.0.0.0', 2806)
+app.run('0.0.0.0', 2806,threaded=True)

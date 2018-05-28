@@ -15,7 +15,7 @@ These commands can turn the lights off, set the colour of the lights or start a 
 ### Fade:
 An article on exactly how the Fade show allows for(in theory) unlimited LED strips to be controlled in sync wirelessly is coming soon.
 
-You're obviously welcome sourcecode yourself for now though, as it's pretty simple really. Just requires the server and all the clients to agree on the time as accurately as possible. 
+You're obviously welcome to look at sourcecode yourself for now though, as it's pretty simple really. Just requires the server and all the clients to agree on the time as accurately as possible. 
 It seems that just using the same NTP server for all devices is enough, but this needs further investigation.
 
 ## Controllers and other info:
