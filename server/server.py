@@ -152,7 +152,8 @@ def set_colour():
 
 @app.route("/lights/clients")
 def client_info():
-    pass
+    lights.updateIPS()
+    return json.dumps([x.__dict__ for x in lights.clients])
 
 
 @app.route("/lights/groups/addClient", methods=['POST'])
