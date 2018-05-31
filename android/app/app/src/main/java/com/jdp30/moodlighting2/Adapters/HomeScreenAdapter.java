@@ -46,11 +46,8 @@ public class HomeScreenAdapter extends BaseAdapter implements View.OnClickListen
         return 0;
     }
 
-    // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Get the data item for this position
         Card card = getItem(position);
-        // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.home_screen_card_layout, parent, false);
         }
@@ -58,12 +55,8 @@ public class HomeScreenAdapter extends BaseAdapter implements View.OnClickListen
         TextView text = (TextView) convertView.findViewById(R.id.home_screen_card_layout_text);
         ImageView icon = (ImageView) convertView.findViewById(R.id.home_scree_card_layout_icon);
 
-        // Populate the data into the template view using the data object
         text.setText(card.getTitle());
         icon.setImageResource(card.getResource());
-        // Return the completed view to render on screen
-
-       // convertView.setMinimumHeight(MoodLightingHomeActivity.height/3);
         convertView.setOnClickListener(this);
         return convertView;
     }
@@ -71,12 +64,10 @@ public class HomeScreenAdapter extends BaseAdapter implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        String text = (String) ((TextView)v.findViewById(R.id.home_screen_card_layout_text)).getText();
-        if(text.equalsIgnoreCase("Fade Show")){
-       //     Toast.makeText(mContext,"Start Fade Show",Toast.LENGTH_LONG).show();
+        String text = (String) ((TextView) v.findViewById(R.id.home_screen_card_layout_text)).getText();
+        if (text.equalsIgnoreCase("Fade Show")) {
             MoodLightingHomeActivity.instance.setCurrentFragment(new StartFadeFragment());
-        }
-        else if(text.equalsIgnoreCase("Set Colour")){
+        } else if (text.equalsIgnoreCase("Set Colour")) {
             MoodLightingHomeActivity.instance.setCurrentFragment(new SetColorFragment());
         }
     }

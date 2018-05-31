@@ -3,6 +3,7 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <view
+        android:id="@+id/moodlight_color_picker_view"
         class="com.jdp30.moodlighting2.Views.ColorSelectorView"
         id="@+id/view"
         layout_alignParentLeft="true"
@@ -10,36 +11,9 @@
         layout_alignParentTop="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_above="@+id/button2"
-        android:id="@+id/view2" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Button" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/view2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/button2">
+        android:layout_alignParentTop="true" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <GridView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-    </ScrollView>
 </RelativeLayout>

@@ -13,18 +13,25 @@ import android.widget.SeekBar;
 
 import com.jdp30.moodlighting2.Adapters.ColorGridListAdapter;
 import com.jdp30.moodlighting2.R;
+import com.jdp30.moodlighting2.Util;
+import com.jdp30.moodlighting2.Views.ColorSelectorView;
 
 /**
  * Created by jackp on 31/05/2018.
  */
 
-public class SetColorFragment extends Fragment {
+public class SetColorFragment extends Fragment implements ColorSelectorView.ColorListener{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.moodlighting_set_color_fragment, container, false);
+        ((ColorSelectorView)v.findViewById(R.id.moodlight_color_picker_view)).setListener(this);
         return v;
     }
 
+    @Override
+    public void onColorChanged(int color) {
+        Util.API_setColor(color,getActivity());
+    }
 }

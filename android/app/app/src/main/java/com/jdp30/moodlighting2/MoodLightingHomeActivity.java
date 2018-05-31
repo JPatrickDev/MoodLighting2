@@ -18,6 +18,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.jdp30.moodlighting2.Adapters.HomeScreenAdapter;
 import com.jdp30.moodlighting2.Fragments.HomeScreenFragment;
 import com.jdp30.moodlighting2.Fragments.StartFadeFragment;
@@ -32,11 +34,12 @@ public class MoodLightingHomeActivity extends AppCompatActivity
     public static MoodLightingHomeActivity instance;
 
     Stack<Fragment> backStack = new Stack<Fragment>();
-
+    public RequestQueue requestQueue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         instance = this;
+        requestQueue = Volley.newRequestQueue(this);
         setContentView(R.layout.activity_mood_lighting_home);
 
 

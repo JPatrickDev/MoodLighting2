@@ -25,6 +25,8 @@ public class ColorSelectorView extends View {
     private int currentColor = Color.WHITE;
     private float colourRadius = 1.0f;
 
+    private ColorListener listener;
+
     private int[] presetColors = new int[]{Color.RED,Color.GREEN,Color.BLUE,Color.CYAN,Color.YELLOW,Color.rgb(255,180,0),Color.rgb(255,0,255)};
 
     public ColorSelectorView(Context context) {
@@ -78,7 +80,7 @@ public class ColorSelectorView extends View {
         canvas.drawCircle(this.imgX + (picker.getWidth() / 2), this.imgY + (picker.getHeight() / 2), colourRadius, p);
         p = new Paint();
         canvas.drawBitmap(picker, this.imgX, this.imgY, p);
-
+/*
         int i = 0;
         int w = (getWidth() - 100) / presetColors.length;
         for(int c : presetColors){
@@ -86,7 +88,7 @@ public class ColorSelectorView extends View {
             canvas.drawRect(50 + w * i, this.imgY + (picker.getHeight() / 2) + colourRadius + 30, (w*i) + w + 50,this.imgY + (picker.getHeight() / 2) + colourRadius + w/2 + 30,p);
             canvas.drawRect(50 + w * i, this.imgY + (picker.getHeight() / 2) + colourRadius + 30, (w*i) + w + 50,this.imgY + (picker.getHeight() / 2) + colourRadius + w/2 + 30,outline);
             i++;
-        }
+        }*/
     }
 
 
@@ -99,11 +101,22 @@ public class ColorSelectorView extends View {
             int pY = (int) (y - imgY);
             if (pX >= 0 && pY >= 0 && pX < picker.getWidth() && pY < picker.getHeight() ) {
                 this.currentColor = picker.getPixel(pX,pY);
+                if(listener != null){
+                    listener.onColorChanged(currentColor);
+                }
                 Log.d("MoodLighting2",this.currentColor + "");
                 invalidate();
             }
-            //    Log.d("MoodLighting2",  ( + ":" + ));
         }
         return true;
     }
+
+    public void setListener(ColorListener listener){
+        this.listener = listener;
+    }
+
+    public interface ColorListener{
+        void onColorChanged(int color);
+    }
+
 }
