@@ -15,9 +15,9 @@ class ColorResult:
 
 
 class FadeShow:
-
-    def __init__(self,parent):
+    def __init__(self, parent):
         self.parent = parent
+
     def run(self, startedAt, pauseTime, fadeTime, colours):
         self.startTime = startedAt
         self.pauseTime = pauseTime
@@ -57,5 +57,3 @@ class FadeShow:
         g = self.interpolate(colorOne.g, colorTwo.g, step, stepMax)
         b = self.interpolate(colorOne.b, colorTwo.b, step, stepMax)
         return ColorResult(r, g, b)
-
-

@@ -113,10 +113,11 @@ class MoodLightingServer:
         with open('groups.json') as f:
             data = json.load(f)
         for g in data:
-            grObj = Group(g['groupID'],g['name'])
+            grObj = Group(g['groupID'], g['name'])
             for c in g['clients']:
                 grObj.clients.append(c)
             self.groups.append(grObj)
+
 
 lights = MoodLightingServer().run()
 app = Flask(__name__)
@@ -134,16 +135,17 @@ def start_fade():
     lights.startFade(data)
     return str(time.time())
 
+
 @app.route("/lights/stop")
 def stop_fade():
     lights.stopShow()
     return str(time.time())
 
 
-# TODO Should be done via JSON
-@app.route("/lights/setColor")
+@app.route("/lights/setColor", methods=['POST'])
 def set_colour():
-    c = request.args.get('c')
+    data = json.loads(request.data)
+    c = data['color']
     lights.setColor(c)
     return str(time.time())
 
@@ -151,6 +153,7 @@ def set_colour():
 @app.route("/lights/clients")
 def client_info():
     pass
+
 
 @app.route("/lights/groups/addClient", methods=['POST'])
 def add_client_to_group():
@@ -169,9 +172,10 @@ def create_group():
     lights.createGroup(name)
     return str(time.time())
 
+
 @app.route("/lights/groups")
 def list_groups():
     return json.dumps([x.__dict__ for x in lights.groups])
 
 
-app.run('0.0.0.0', 2806,threaded=True)
+app.run('0.0.0.0', 2806, threaded=True)
