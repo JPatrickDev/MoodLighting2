@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.jdp30.moodlighting2.MoodLightingHomeActivity">
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/moodlighting_start_fade"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:id="@+id/moodlighting_fade_time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:layout_below="@+id/moodlighting_fade_time_seek"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="29dp"
+        android:text="@string/moodlighting_fade_time"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/moodlighting_start" />
+
+    <SeekBar
+        android:id="@+id/moodlighting_fade_time_seek"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/moodlighting_fade_time_text"
+        android:layout_alignLeft="@+id/moodlighting_fade_time_text"
+        android:layout_alignRight="@+id/moodlighting_fade_time_text"
+        android:layout_alignStart="@+id/moodlighting_fade_time_text"
+        android:layout_below="@+id/textView3"
+        android:max="10000" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/moodlighting_fade_time_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/moodlighting_pause_time" />
+
+    <SeekBar
+        android:id="@+id/moodlighting_pause_time_seek"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/moodlighting_pause_time_text"
+        android:layout_alignLeft="@+id/moodlighting_pause_time_text"
+        android:layout_alignRight="@+id/moodlighting_pause_time_text"
+        android:layout_alignStart="@+id/moodlighting_pause_time_text"
+        android:layout_below="@+id/textView6"
+        android:max="10000" />
+
+    <EditText
+        android:id="@+id/moodlighting_pause_time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/moodlighting_fade_time_text"
+        android:layout_alignRight="@+id/moodlighting_fade_time_text"
+        android:layout_below="@+id/moodlighting_pause_time_seek"
+        android:ems="10"
+        android:inputType="numberDecimal" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/moodlighting_pause_time_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"
+        android:text="@string/moodlighting_colors" />
+
+    <include
+        layout="@layout/moodlighting_color_select_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/textView7"
+        android:layout_above="@+id/button" />
+</RelativeLayout>

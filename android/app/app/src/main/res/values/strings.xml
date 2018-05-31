@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">MoodLighting2</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="moodlighting_start_fade">Start A Fade Show</string>
+    <string name="moodlighting_fade_time">Fade Time</string>
+    <string name="moodlighting_pause_time">Pause Time:</string>
+    <string name="moodlighting_start">Start</string>
+    <string name="moodlighting_colors">Colors</string>
+    <string name="moodlighting_no_colors">Click here to add a color.</string>
+</resources>
