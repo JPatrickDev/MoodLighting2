@@ -100,6 +100,10 @@ public class MoodLightingHomeActivity extends AppCompatActivity
             return true;
         }
 
+        if (id == R.id.action_stops) {
+            Util.API_stop(this);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

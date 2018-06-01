@@ -17,6 +17,7 @@ class ColorResult:
 class FadeShow:
     def __init__(self, parent):
         self.parent = parent
+        self.running = False
 
     def run(self, startedAt, pauseTime, fadeTime, colours):
         self.startTime = startedAt
@@ -27,7 +28,7 @@ class FadeShow:
         while self.running:
             dT = (time.time()) - self.startTime
             wV = dT % (self.c.__len__() * (self.pauseTime + self.fadeTime))
-            p = math.floor(wV / (self.pauseTime + self.fadeTime))
+            p = int(math.floor(wV / (self.pauseTime + self.fadeTime)))
             if wV - (p * (self.pauseTime + self.fadeTime)) > self.pauseTime:
                 fP = (wV - (p * (self.pauseTime + self.fadeTime))) - self.pauseTime
                 pO = p + 1
@@ -39,11 +40,12 @@ class FadeShow:
         self.setColor(ColorResult(0, 0, 0))
 
     def setColor(self, result):
-        print("[" + str(round(result.r, 2)) + "," + str(round(result.g, 2)) + "," + str(round(result.b, 2)) + "]")
+        #print("[" + str(round(result.r, 2)) + "," + str(round(result.g, 2)) + "," + str(round(result.b, 2)) + "]")
         self.parent.updateColor(result)
 
     def stop(self):
         self.running = False
+        print(self.running)
 
     # Linear interpolation between two values.
     def interpolate(self, startValue, endValue, stepNumber, lastStepNumber):

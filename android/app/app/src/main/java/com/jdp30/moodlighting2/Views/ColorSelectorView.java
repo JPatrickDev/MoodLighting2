@@ -115,6 +115,10 @@ public class ColorSelectorView extends View {
         this.listener = listener;
     }
 
+    public int getCurrentColor() {
+        return currentColor;
+    }
+
     public interface ColorListener{
         void onColorChanged(int color);
     }

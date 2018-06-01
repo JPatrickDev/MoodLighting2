@@ -9,13 +9,7 @@
         android:background="@drawable/gridview_border"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:id="@+id/moodlighting_color_select_area_no_items_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/moodlighting_no_colors" />
+        android:layout_alignParentStart="true"
+        android:numColumns="auto_fit"
+         />
 </RelativeLayout>

@@ -128,18 +128,18 @@ def info():
     return json.dumps(lights.currentShow)
 
 
-@app.route("/lights/start/FADE", methods=['POST'])
+@app.route("/lights/start/fade", methods=['POST'])
 def start_fade():
     data = json.loads(request.data)
     data['startTime'] = time.time()
     lights.startFade(data)
-    return str(time.time())
+    return getJSONResponse()
 
 
 @app.route("/lights/stop")
 def stop_fade():
     lights.stopShow()
-    return str(time.time())
+    return getJSONResponse()
 
 
 @app.route("/lights/setColor", methods=['POST'])
@@ -147,7 +147,7 @@ def set_colour():
     data = json.loads(request.data)
     c = data['color']
     lights.setColor(c)
-    return str(time.time())
+    return getJSONResponse()
 
 
 @app.route("/lights/clients")
@@ -163,7 +163,7 @@ def add_client_to_group():
     id = data['clientID']
     groupID = data['groupID']
     lights.addToGroup(id, groupID)
-    return str(time.time())
+    return getJSONResponse()
 
 
 @app.route("/lights/groups/create", methods=['POST'])
@@ -171,12 +171,13 @@ def create_group():
     data = json.loads(request.data)
     name = data['groupName']
     lights.createGroup(name)
-    return str(time.time())
+    return getJSONResponse()
 
 
 @app.route("/lights/groups")
 def list_groups():
     return json.dumps([x.__dict__ for x in lights.groups])
 
-
+def getJSONResponse():
+    return json.dumps({"status" : "ok"})
 app.run('0.0.0.0', 2806, threaded=True)
