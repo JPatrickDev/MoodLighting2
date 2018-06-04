@@ -1,5 +1,6 @@
 package com.jdp30.moodlighting2.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Build;
@@ -17,20 +18,21 @@ import com.jdp30.moodlighting2.Fragments.SetColorFragment;
 import com.jdp30.moodlighting2.Fragments.StartFadeFragment;
 import com.jdp30.moodlighting2.MoodLightingHomeActivity;
 import com.jdp30.moodlighting2.R;
+import com.jdp30.moodlighting2.Util;
 
 /**
  * Created by jackp on 30/05/2018.
  */
 
 public class HomeScreenAdapter extends BaseAdapter implements View.OnClickListener {
-    private Context mContext;
+    private Activity mContext;
 
     private Card[] cards = new Card[]{
             new Card("Fade Show", R.mipmap.ic_launcher), new Card("Set Colour", R.mipmap.ic_launcher),
             new Card("Toggle Lights", R.mipmap.ic_launcher), new Card("Groups", R.mipmap.ic_launcher),
             new Card("Presets", R.mipmap.ic_launcher), new Card("Server Info", R.mipmap.ic_launcher)};
 
-    public HomeScreenAdapter(Context c) {
+    public HomeScreenAdapter(Activity c) {
         mContext = c;
     }
 
@@ -69,6 +71,8 @@ public class HomeScreenAdapter extends BaseAdapter implements View.OnClickListen
             MoodLightingHomeActivity.instance.setCurrentFragment(new StartFadeFragment());
         } else if (text.equalsIgnoreCase("Set Colour")) {
             MoodLightingHomeActivity.instance.setCurrentFragment(new SetColorFragment());
+        }else if(text.equalsIgnoreCase("Toggle Lights")){
+            Util.API_toggleLight(mContext,"255,255,255");
         }
     }
 }

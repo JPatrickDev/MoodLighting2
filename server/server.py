@@ -69,7 +69,7 @@ class MoodLightingServer:
 
     def setColor(self, color):
         self.updateIPS()
-        self.currentShow = {"type": "NONE"}
+        self.currentShow = {"type": "NONE","color" : str(color)}
         self.removeDead(util.sentToIPS("COLOUR " + str(color), [x.address for x in self.clients], 1202))
 
     def stopShow(self):

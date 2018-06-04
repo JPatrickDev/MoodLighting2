@@ -70,6 +70,60 @@ public class Util {
         return red + "," + green + "," + blue;
     }
 
+    public static int colorStringToInt(String color) {
+        String[] c = color.split(",");
+        int red = Integer.parseInt(c[0]);
+        int green = Integer.parseInt(c[1]);
+        int blue = Integer.parseInt(c[2]);
+        return Color.rgb(red,green,blue);
+    }
+
+    private static void makeGETRequestWithResponse(final Activity a, String endpoint, Response.Listener<JSONObject> req){
+        String URL = "http://" + getCurrentIP(a) + ":" + port + "/" + endpoint;
+        JsonObjectRequest request_json = new JsonObjectRequest(URL, null,
+               req, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(a, "There was an error making the request.", Toast.LENGTH_SHORT).show();
+                error.printStackTrace();
+            }
+        });
+        MoodLightingHomeActivity.instance.requestQueue.add(request_json);
+    }
+
+    public static void API_toggleLight(final Activity a, final String newColor){
+        Response.Listener<JSONObject> infoResponse = new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String state = response.getString("type");
+                    if (state.equalsIgnoreCase("NONE")) {
+                            if(response.has("color")){
+                                if(response.getString("color").equals("0,0,0")){
+                                    API_setColor(colorStringToInt(newColor),a);
+                                }else{
+                                    API_setColor(colorStringToInt("0,0,0"),a);
+                                }
+                            }else{
+                                API_setColor(colorStringToInt(newColor),a);
+                            }
+                    }else{
+                        Response.Listener<JSONObject> stopResponse = new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                API_toggleLight(a,newColor);
+                            }
+                        };
+                        makeGETRequestWithResponse(a,"lights/stop",stopResponse);
+                    }
+                }catch (Exception e){
+
+                }
+            }
+        };
+        makeGETRequestWithResponse(a,"lights/info",infoResponse);
+    }
+
     private static void makeGETRequest(final Activity a, String endpoint) {
         String URL = "http://" + getCurrentIP(a) + ":" + port + "/" + endpoint;
         JsonObjectRequest request_json = new JsonObjectRequest(URL, null,
