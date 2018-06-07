@@ -130,7 +130,7 @@ def info():
 
 @app.route("/lights/start/fade", methods=['POST'])
 def start_fade():
-    data = json.loads(request.data)
+    data = request.json
     data['startTime'] = time.time()
     lights.startFade(data)
     return getJSONResponse()
@@ -144,7 +144,7 @@ def stop_fade():
 
 @app.route("/lights/setColor", methods=['POST'])
 def set_colour():
-    data = json.loads(request.data)
+    data = request.json
     c = data['color']
     lights.setColor(c)
     return getJSONResponse()
@@ -159,7 +159,7 @@ def client_info():
 @app.route("/lights/groups/addClient", methods=['POST'])
 def add_client_to_group():
     print("Called")
-    data = json.loads(request.data)
+    data = request.json
     id = data['clientID']
     groupID = data['groupID']
     lights.addToGroup(id, groupID)
@@ -168,7 +168,7 @@ def add_client_to_group():
 
 @app.route("/lights/groups/create", methods=['POST'])
 def create_group():
-    data = json.loads(request.data)
+    data = request.json
     name = data['groupName']
     lights.createGroup(name)
     return getJSONResponse()
@@ -178,6 +178,7 @@ def create_group():
 def list_groups():
     return json.dumps([x.__dict__ for x in lights.groups])
 
+#TODO: Put something useful here.
 def getJSONResponse():
     return json.dumps({"status" : "ok"})
 app.run('0.0.0.0', 2806, threaded=True)

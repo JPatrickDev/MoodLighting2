@@ -31,7 +31,7 @@ public class Util {
 
     public static String getCurrentIP(Activity a) {
         SharedPreferences settings = a.getPreferences(0);
-        return settings.getString("moodlighting_IP", "192.168.0.177");
+        return settings.getString("moodlighting_IP", "192.168.0.159");
     }
 
     public static void setCurrentIP(String newValue, Activity a) {

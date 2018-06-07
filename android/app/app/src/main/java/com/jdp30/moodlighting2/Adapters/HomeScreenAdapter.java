@@ -72,7 +72,7 @@ public class HomeScreenAdapter extends BaseAdapter implements View.OnClickListen
         } else if (text.equalsIgnoreCase("Set Colour")) {
             MoodLightingHomeActivity.instance.setCurrentFragment(new SetColorFragment());
         }else if(text.equalsIgnoreCase("Toggle Lights")){
-            Util.API_toggleLight(mContext,"255,255,255");
+            Util.API_toggleLight(mContext,"40,40,40");
         }
     }
 }

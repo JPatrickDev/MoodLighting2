@@ -7,7 +7,7 @@ import requests
 
 import util
 from shows import FadeShow, ColorResult
-#import pigpio
+import pigpio
 
 
 class Client():
@@ -20,10 +20,11 @@ class Client():
             data = json.load(f)
         self.id = data['clientID']
         self.name = data['clientName']
-  #  pi = pigpio.pi()
+    pi = pigpio.pi()
 
     def connect(self, ip, port=2705):
         self.ip = ip
+        self.show = None
         self.socket = socket.socket()
         self.socket.connect((ip, 2705))
         self.socket.send((self.id + ":" + self.name).encode("utf8"))
@@ -35,11 +36,11 @@ class Client():
                     data = s.recv(4096)
                     if not data:
                         print("Disconnected From MoodLightingServer")
-                        waiting = False;
+                        waiting = False
                     else:
                         out = data.decode("utf8")
                         print(out)
-                        waiting = False;
+                        waiting = False
                         self.run()
 
     def run(self):
@@ -63,7 +64,11 @@ class Client():
                 print("Stopping")
                 if self.show is not None:
                     self.show.stop()
+                else:
+                    self.updateColor(ColorResult(0,0,0))
             if i.startswith("COLOUR"):
+                if self.show is not None:
+                    self.show.stop()
                 cD = i.split(" ")[1].split(",")
                 r = ColorResult(int(cD[0]), int(cD[1]), int(cD[2]))
                 self.updateColor(r)
@@ -83,9 +88,9 @@ class Client():
     # Set the LEDs to the given colour result
     def updateColor(self, result):
         print(str(result.r) + ":" + str(result.g) + ":" + str(result.b))
-     #   self.pi.set_PWM_dutycycle(self.rPin, result.r)
-     #   self.pi.set_PWM_dutycycle(self.gPin, result.g)
-     #   self.pi.set_PWM_dutycycle(self.bPin, result.b)
+        self.pi.set_PWM_dutycycle(self.rPin, result.r)
+        self.pi.set_PWM_dutycycle(self.gPin, result.g)
+        self.pi.set_PWM_dutycycle(self.bPin, result.b)
 
 
 Client().connect("localhost")
