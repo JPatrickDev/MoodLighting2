@@ -66,19 +66,17 @@ class FlashShow:
         self.parent = parent
         self.running = False
 
-    def run(self, startedAt, duration, color, fade):
+    def run(self, startedAt, duration, color, fade,repeat):
         self.startTime = startedAt
         self.duration = duration
         self.color = color
         self.fade = fade
         self.running = True
+        self.repeat = repeat
 
         self.pauseTime = 0
         self.fadeTime = self.duration/2
         self.c = [ColorResult(0,0,0),color,ColorResult(0,0,0)]
-
-
-
 
         while self.running:
             dT = (time.time()) - self.startTime
@@ -95,7 +93,7 @@ class FlashShow:
                     self.setColor(self.interp(self.c[p], self.c[pO], fP, self.fadeTime))
                 else:
                     self.setColor(self.c[p])
-            if dT > self.duration:
+            if dT > self.duration and self.repeat == False:
                 self.stop()
         self.setColor(ColorResult(0, 0, 0))
 
