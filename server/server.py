@@ -59,6 +59,12 @@ class MoodLightingServer:
     def updateIPS(self):
         while not self.queue.empty():
             self.clients.append(self.queue.get())
+        if self.currentShow['type'] is "FLASH":
+            dT = (time.time()) - self.currentShow['data']['startTime']
+            if dT > float(self.currentShow['data']['duration']):
+                print("Stopping flash")
+                self.currentShow = {"type": "NONE"}
+                self.removeDead(util.sentToIPS("STOP", [x.address for x in self.clients], 1202))
 
     def startFade(self, data):
         self.updateIPS()
@@ -66,6 +72,13 @@ class MoodLightingServer:
             return
         self.currentShow = {"type": "FADE", "data": data}
         self.removeDead(util.sentToIPS("FADE", [x.address for x in self.clients], 1202))
+
+    def startFade(self, data):
+        self.updateIPS()
+        if self.currentShow['type'] is not "NONE":
+            return
+        self.currentShow = {"type": "FLASH", "data": data}
+        self.removeDead(util.sentToIPS("FLASH", [x.address for x in self.clients], 1202))
 
     def setColor(self, color):
         self.updateIPS()
@@ -125,6 +138,7 @@ app = Flask(__name__)
 
 @app.route("/lights/info")
 def info():
+    lights.updateIPS()
     return json.dumps(lights.currentShow)
 
 
@@ -137,7 +151,7 @@ def start_fade():
 
 
 @app.route("/lights/stop")
-def stop_fade():
+def stop_show():
     lights.stopShow()
     return getJSONResponse()
 
@@ -174,6 +188,14 @@ def create_group():
     return getJSONResponse()
 
 
+@app.route("/lights/start/flash", methods=['POST'])
+def flash():
+    data = request.json
+    data['startTime'] = time.time()
+    lights.startFade(data)
+    return getJSONResponse()
+
+
 @app.route("/lights/groups")
 def list_groups():
     return json.dumps([x.__dict__ for x in lights.groups])
@@ -181,4 +203,6 @@ def list_groups():
 #TODO: Put something useful here.
 def getJSONResponse():
     return json.dumps({"status" : "ok"})
+
+
 app.run('0.0.0.0', 2806, threaded=True)
