@@ -223,6 +223,7 @@ def create_group():
     data = request.json
     name = data['groupName']
     lights.createGroup(name)
+    
     return getJSONResponse()
 
 

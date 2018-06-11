@@ -85,11 +85,15 @@ class Client():
             i = util.waitForData(serversocket)
 
     def startFade(self, r):
-        g = self.getGroup()
+        g = self.getGroups()
         r = json.loads(r)
-        if g in r:
-            r = r[g]
-        else:
+        found = False
+        for group in g:
+            if group in r:
+                r = r[group]
+                found = True
+                break
+        if not found:
             r = r['all']
         print(r)
         fade = FadeShow(self)
@@ -109,11 +113,11 @@ class Client():
         self.show = flash
         flash.run(float(r['data']['startTime']), float(r['data']['duration']), color , r['data']['fade'],r['data']['repeat'])
 
-    def getGroup(self):
+    def getGroups(self):
         r = requests.get(url='http://' + self.ip + ':2806/lights/getGroups?id=' + self.id)
         r = (r.json())
         if r.__len__() is not 0:
-            return r[0]
+            return r
         return "all"
 
     # Set the LEDs to the given colour result
