@@ -105,6 +105,10 @@ public class MoodLightingHomeActivity extends AppCompatActivity
             return true;
         }
 
+        if(id == R.id.action_set_ip){
+            Util.updateIP(this);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

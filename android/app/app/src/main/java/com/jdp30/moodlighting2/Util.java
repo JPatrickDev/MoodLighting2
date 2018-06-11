@@ -1,10 +1,13 @@
 package com.jdp30.moodlighting2;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -60,7 +63,7 @@ public class Util {
     }
 
     public static void API_stop(Activity activity) {
-        makeGETRequest(activity,"lights/stop");
+        makeJSONRequest(activity,"lights/stop", new HashMap<String, Object>());
     }
 
     public static String colorIntToString(int color) {
@@ -95,29 +98,23 @@ public class Util {
         Response.Listener<JSONObject> infoResponse = new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                try {
-                    String state = response.getString("type");
-                    if (state.equalsIgnoreCase("NONE")) {
-                            if(response.has("color")){
-                                if(response.getString("color").equals("0,0,0")){
-                                    API_setColor(colorStringToInt(newColor),a);
-                                }else{
-                                    API_setColor(colorStringToInt("0,0,0"),a);
-                                }
-                            }else{
+                if(response.has("all")){
+                    try {
+                        JSONObject all = response.getJSONObject("all");
+                        if(all.has("color")){
+                            if(all.getString("color").equals("0,0,0")){
                                 API_setColor(colorStringToInt(newColor),a);
+                            }else{
+                                API_setColor(colorStringToInt("0,0,0"),a);
                             }
-                    }else{
-                        Response.Listener<JSONObject> stopResponse = new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                API_toggleLight(a,newColor);
-                            }
-                        };
-                        makeGETRequestWithResponse(a,"lights/stop",stopResponse);
+                        }else{
+                            API_setColor(colorStringToInt(newColor),a);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }catch (Exception e){
-
+                }else{
+                    API_setColor(colorStringToInt(newColor),a);
                 }
             }
         };
@@ -162,5 +159,27 @@ public class Util {
 
     public static double round(double value){
         return (double)Math.round(value * 1000d) / 1000d;
+    }
+
+    public static void updateIP(final Activity activity) {
+        final EditText ipText = new EditText(activity);
+        ipText.setHint(getCurrentIP(activity));
+
+        new AlertDialog.Builder(activity)
+                .setTitle("Update IP")
+                .setMessage("Please enter the new IP of the MoodLighting server")
+                .setView(ipText)
+                .setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String ip = ipText.getText().toString();
+                        setCurrentIP(ip,activity);
+                        Toast.makeText(activity, getCurrentIP(activity), Toast.LENGTH_LONG).show();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                })
+                .show();
     }
 }
