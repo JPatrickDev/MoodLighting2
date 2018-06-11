@@ -47,9 +47,9 @@ class Client():
         print("Connection Established, running")
         serversocket = util.getServerSocket("0.0.0.0", 1202)
         i = ""
-        r = requests.get(url='http://' + self.ip + ':2806/lights/info')
-        r = (r.json())
-        i = r['type']
+        #r = requests.get(url='http://' + self.ip + ':2806/lights/info')
+        #r = (r.json())
+        #i = r['type']
         while 1:
             print(i)
             if i.startswith("FADE"):
@@ -85,7 +85,12 @@ class Client():
             i = util.waitForData(serversocket)
 
     def startFade(self, r):
+        g = self.getGroup()
         r = json.loads(r)
+        if g in r:
+            r = r[g]
+        else:
+            r = r['all']
         print(r)
         fade = FadeShow(self)
         self.show = fade
@@ -102,14 +107,21 @@ class Client():
         color = ColorResult(int(cD[0]), int(cD[1]), int(cD[2]))
         flash = FlashShow(self)
         self.show = flash
-        flash.run(float(r['data']['startTime']), float(r['data']['duration']), color , r['data']['fade'])
+        flash.run(float(r['data']['startTime']), float(r['data']['duration']), color , r['data']['fade'],r['data']['repeat'])
+
+    def getGroup(self):
+        r = requests.get(url='http://' + self.ip + ':2806/lights/getGroups?id=' + self.id)
+        r = (r.json())
+        if r.__len__() is not 0:
+            return r[0]
+        return "all"
 
     # Set the LEDs to the given colour result
     def updateColor(self, result):
         print(str(result.r) + ":" + str(result.g) + ":" + str(result.b))
-     #   self.pi.set_PWM_dutycycle(self.rPin, result.r)
-     #   self.pi.set_PWM_dutycycle(self.gPin, result.g)
-      #  self.pi.set_PWM_dutycycle(self.bPin, result.b)
+        #self.pi.set_PWM_dutycycle(self.rPin, result.r)
+        #self.pi.set_PWM_dutycycle(self.gPin, result.g)
+        #self.pi.set_PWM_dutycycle(self.bPin, result.b)
 
 
 Client().connect("192.168.0.177")

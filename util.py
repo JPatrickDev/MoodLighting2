@@ -25,7 +25,8 @@ def sentToIPS(data,ips,port):
             client.send(data.encode("utf8"))
             client = None
             validIPS.append(ip)
-        except Exception:
+        except Exception as e:
+            print(e)
             client = None
     return validIPS
 
