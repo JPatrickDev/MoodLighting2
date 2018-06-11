@@ -93,7 +93,7 @@ class FlashShow:
                     self.setColor(self.interp(self.c[p], self.c[pO], fP, self.fadeTime))
                 else:
                     self.setColor(self.c[p])
-            if dT > self.duration and self.repeat == False:
+            if dT > self.duration and self.repeat == "False":
                 self.stop()
         self.setColor(ColorResult(0, 0, 0))
 

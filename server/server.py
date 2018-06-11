@@ -59,12 +59,19 @@ class MoodLightingServer:
     def updateIPS(self):
         while not self.queue.empty():
             self.clients.append(self.queue.get())
-            # if self.currentShow['type'] is "FLASH":
-            #      dT = (time.time()) - self.currentShow['data']['startTime']
-            #     if dT > float(self.currentShow['data']['duration']):
-            #         print("Stopping flash")
-            #         self.currentShow = {"type": "NONE"}
-            #         self.removeDead(util.sentToIPS("STOP", [x.address for x in self.clients], 1202))
+        self.checkFlash()
+
+    def checkFlash(self):
+        toGo = []
+        for group, showData in self.currentShow.items():
+            if showData['type'] is "FLASH":
+                dT = (time.time()) - showData['data']['startTime']
+                if dT > float(showData['data']['duration']) and showData['data']['repeat'] == "False":
+                    print("Stopping flash")
+                    toGo.append(group)
+                    self.removeDead(self.sendToGroup("STOP", group))
+        for group in toGo:
+            del self.currentShow[group]
 
     def startFade(self, data):
         self.updateIPS()
@@ -73,10 +80,20 @@ class MoodLightingServer:
         self.currentShow[data['group']] = {"type": "FADE", "data": data}
         self.removeDead(self.sendToGroup("FADE", data['group']))
 
+
+    def startFlash(self, data):
+        self.updateIPS()
+        if data['group'] in self.currentShow and self.currentShow[data['group']]['type'] is not "NONE":
+            return
+        self.currentShow[data['group']] = {"type": "FLASH", "data": data}
+        self.removeDead(self.sendToGroup("FLASH", data['group']))
+
+
     def setColor(self, data):
         self.updateIPS()
         self.currentShow[data['group']] = {"type": "NONE", "color": str(data['color'])}
         self.removeDead(self.sendToGroup("COLOUR " + str(data['color']), data['group']))
+
 
     def stopShow(self, data):
         self.updateIPS()
@@ -90,11 +107,13 @@ class MoodLightingServer:
                 del self.currentShow[data['group']]
         self.removeDead(self.sendToGroup("STOP", data['group']))
 
+
     def removeDead(self, addresses):
         for c in self.clients:
             if not c.address in addresses:
                 print(str(c.id) + " disconnected, dropping.")
                 self.clients.remove(c)
+
 
     def addToGroup(self, id, groupID):
         group = self.getGroup(groupID)
@@ -103,11 +122,13 @@ class MoodLightingServer:
             group.clients.append(id)
             self.saveGroups()
 
+
     def getGroup(self, groupID):
         for g in self.groups:
             if g.groupID == groupID:
                 return g
         return None
+
 
     def createGroup(self, name):
         id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
@@ -116,9 +137,11 @@ class MoodLightingServer:
         print(self.groups)
         self.saveGroups()
 
+
     def saveGroups(self):
         with open('groups.json', 'w') as outfile:
             json.dump([x.__dict__ for x in lights.groups], outfile)
+
 
     def loadGroups(self):
         if not os.path.exists('groups.json'):
@@ -131,11 +154,13 @@ class MoodLightingServer:
                 grObj.clients.append(c)
             self.groups.append(grObj)
 
+
     def getIPByID(self, clientID):
         for c in self.clients:
             if c.id == clientID:
                 return c.address
         return None
+
 
     def getIPSByGroup(self, group):
         g = self.getGroup(group)
@@ -150,6 +175,7 @@ class MoodLightingServer:
                 ips.append(c.address)
         print(ips)
         return ips
+
 
     def sendToGroup(self, message, group):
         ips = self.getIPSByGroup(group)
@@ -223,7 +249,7 @@ def create_group():
     data = request.json
     name = data['groupName']
     lights.createGroup(name)
-    
+
     return getJSONResponse()
 
 
@@ -231,13 +257,16 @@ def create_group():
 def flash():
     data = request.json
     data['startTime'] = time.time()
-    lights.startFade(data)
+    if "group" not in data:
+        data['group'] = "all"
+    lights.startFlash(data)
     return getJSONResponse()
 
 
 @app.route("/lights/groups")
 def list_groups():
     return json.dumps([x.__dict__ for x in lights.groups])
+
 
 @app.route("/lights/getGroups")
 def get_groups_by_id():
@@ -248,6 +277,7 @@ def get_groups_by_id():
             if client == cID:
                 groups.append(g.groupID)
     return json.dumps(groups)
+
 
 # TODO: Put something useful here.
 def getJSONResponse():

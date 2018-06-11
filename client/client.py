@@ -73,7 +73,7 @@ class Client():
                 r = ColorResult(int(cD[0]), int(cD[1]), int(cD[2]))
                 self.updateColor(r)
             if i.startswith("FLASH"):
-                #TODO: Maybe it should resume the previous show once the flash has stopped?
+                # TODO: Maybe it should resume the previous show once the flash has stopped?
                 if self.show is not None:
                     self.show.stop()
                 r = requests.get(url='http://' + self.ip + ':2806/lights/info')
@@ -105,7 +105,16 @@ class Client():
         fade.run(float(r['data']['startTime']), float(r['data']['pauseTime']), float(r['data']['fadeTime']), c)
 
     def doFlash(self,r):
+        g = self.getGroups()
         r = json.loads(r)
+        found = False
+        for group in g:
+            if group in r:
+                r = r[group]
+                found = True
+                break
+        if not found:
+            r = r['all']
         print(r)
         cD = r['data']['color'].split(",")
         color = ColorResult(int(cD[0]), int(cD[1]), int(cD[2]))
