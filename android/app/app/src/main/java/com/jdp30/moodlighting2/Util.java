@@ -13,13 +13,21 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.jdp30.moodlighting2.Model.Group;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
@@ -84,7 +92,20 @@ public class Util {
     private static void makeGETRequestWithResponse(final Activity a, String endpoint, Response.Listener<JSONObject> req){
         String URL = "http://" + getCurrentIP(a) + ":" + port + "/" + endpoint;
         JsonObjectRequest request_json = new JsonObjectRequest(URL, null,
-               req, new Response.ErrorListener() {
+                req, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(a, "There was an error making the request.", Toast.LENGTH_SHORT).show();
+                error.printStackTrace();
+            }
+        });
+        MoodLightingHomeActivity.instance.requestQueue.add(request_json);
+    }
+
+    private static void makeGETRequestWithResponseArray(final Activity a, String endpoint, Response.Listener<JSONArray> req){
+        String URL = "http://" + getCurrentIP(a) + ":" + port + "/" + endpoint;
+        JsonArrayRequest request_json = new JsonArrayRequest(URL,
+                req, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(a, "There was an error making the request.", Toast.LENGTH_SHORT).show();
@@ -181,5 +202,23 @@ public class Util {
                     }
                 })
                 .show();
+    }
+
+    public static void getGroups(final GroupsCallback callback, Activity a){
+        Response.Listener<JSONArray> response = new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                String data = response.toString();
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                Gson gson = gsonBuilder.create();
+                List<Group> groups = Arrays.asList(gson.fromJson(data, Group[].class));
+                callback.callback(groups);
+            }
+        };
+        makeGETRequestWithResponseArray(a,"lights/groups",response);
+    }
+
+    public interface GroupsCallback{
+        void callback(List<Group> groups);
     }
 }

@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jdp30.moodlighting2.Fragments.GroupsFragment;
 import com.jdp30.moodlighting2.Fragments.SetColorFragment;
 import com.jdp30.moodlighting2.Fragments.StartFadeFragment;
 import com.jdp30.moodlighting2.MoodLightingHomeActivity;
@@ -73,6 +74,8 @@ public class HomeScreenAdapter extends BaseAdapter implements View.OnClickListen
             MoodLightingHomeActivity.instance.setCurrentFragment(new SetColorFragment());
         }else if(text.equalsIgnoreCase("Toggle Lights")){
             Util.API_toggleLight(mContext,"40,40,40");
+        }else if(text.equalsIgnoreCase("Groups")){
+            MoodLightingHomeActivity.instance.setCurrentFragment(new GroupsFragment());
         }
     }
 }

@@ -13,4 +13,6 @@
     <string name="moodlighting_no_colors">Click here to add a color.</string>
     <string name="moodlighting_stop">Stop</string>
     <string name="moodligbting_set_ip">Set IP</string>
+    <string name="moodlighting_add_group">Add New Group</string>
+    <string name="moodlighting_groups">Groups</string>
 </resources>
