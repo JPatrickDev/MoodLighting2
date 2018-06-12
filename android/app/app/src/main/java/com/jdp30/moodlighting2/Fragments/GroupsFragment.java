@@ -37,6 +37,12 @@ public class GroupsFragment extends Fragment {
             }
         };
         Util.getGroups(c,this.getActivity());
+        v.findViewById(R.id.moodlighting_groups_fragment_add_group).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Util.addNewGroup(getActivity());
+            }
+        });
         return v;
     }
 

@@ -204,6 +204,33 @@ public class Util {
                 .show();
     }
 
+    public static void addNewGroup(final Activity activity) {
+        final EditText ipText = new EditText(activity);
+        ipText.setHint("");
+
+        new AlertDialog.Builder(activity)
+                .setTitle("New Group")
+                .setMessage("Please enter the name of the new group")
+                .setView(ipText)
+                .setPositiveButton("Add Group", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String group = ipText.getText().toString();
+                        Util.API_createNewGroup(group,activity);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                })
+                .show();
+    }
+
+    private static void API_createNewGroup(String group, Activity activity) {
+        HashMap<String, Object> payload = new HashMap<>();
+        payload.put("groupName",group);
+        makeJSONRequest(activity, "lights/groups/create", payload);
+    }
+
     public static void getGroups(final GroupsCallback callback, Activity a){
         Response.Listener<JSONArray> response = new Response.Listener<JSONArray>() {
             @Override
@@ -216,6 +243,13 @@ public class Util {
             }
         };
         makeGETRequestWithResponseArray(a,"lights/groups",response);
+    }
+
+    public static void API_removeClientFromGroup(String clientID, String groupID, Activity activity) {
+        HashMap<String, Object> payload = new HashMap<>();
+        payload.put("groupID",groupID);
+        payload.put("clientID",clientID);
+        makeJSONRequest(activity, "lights/groups/removeClient", payload);
     }
 
     public interface GroupsCallback{

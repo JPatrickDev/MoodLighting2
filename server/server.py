@@ -80,7 +80,6 @@ class MoodLightingServer:
         self.currentShow[data['group']] = {"type": "FADE", "data": data}
         self.removeDead(self.sendToGroup("FADE", data['group']))
 
-
     def startFlash(self, data):
         self.updateIPS()
         if data['group'] in self.currentShow and self.currentShow[data['group']]['type'] is not "NONE":
@@ -88,12 +87,10 @@ class MoodLightingServer:
         self.currentShow[data['group']] = {"type": "FLASH", "data": data}
         self.removeDead(self.sendToGroup("FLASH", data['group']))
 
-
     def setColor(self, data):
         self.updateIPS()
         self.currentShow[data['group']] = {"type": "NONE", "color": str(data['color'])}
         self.removeDead(self.sendToGroup("COLOUR " + str(data['color']), data['group']))
-
 
     def stopShow(self, data):
         self.updateIPS()
@@ -107,13 +104,11 @@ class MoodLightingServer:
                 del self.currentShow[data['group']]
         self.removeDead(self.sendToGroup("STOP", data['group']))
 
-
     def removeDead(self, addresses):
         for c in self.clients:
             if not c.address in addresses:
                 print(str(c.id) + " disconnected, dropping.")
                 self.clients.remove(c)
-
 
     def addToGroup(self, id, groupID):
         group = self.getGroup(groupID)
@@ -122,13 +117,11 @@ class MoodLightingServer:
             group.clients.append(id)
             self.saveGroups()
 
-
     def getGroup(self, groupID):
         for g in self.groups:
             if g.groupID == groupID:
                 return g
         return None
-
 
     def createGroup(self, name):
         id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
@@ -137,11 +130,9 @@ class MoodLightingServer:
         print(self.groups)
         self.saveGroups()
 
-
     def saveGroups(self):
         with open('groups.json', 'w') as outfile:
             json.dump([x.__dict__ for x in lights.groups], outfile)
-
 
     def loadGroups(self):
         if not os.path.exists('groups.json'):
@@ -154,13 +145,11 @@ class MoodLightingServer:
                 grObj.clients.append(c)
             self.groups.append(grObj)
 
-
     def getIPByID(self, clientID):
         for c in self.clients:
             if c.id == clientID:
                 return c.address
         return None
-
 
     def getIPSByGroup(self, group):
         g = self.getGroup(group)
@@ -176,7 +165,6 @@ class MoodLightingServer:
         print(ips)
         return ips
 
-
     def sendToGroup(self, message, group):
         ips = self.getIPSByGroup(group)
         alive = util.sentToIPS(message, ips, 1202)
@@ -187,6 +175,13 @@ class MoodLightingServer:
             if c.address not in ips:
                 known.append(c.address)
         return known
+
+    def removeFromGroup(self, clientID, groupID):
+        for g in self.groups:
+            if g.groupID == groupID:
+                if clientID in g.clients:
+                    g.clients.remove(clientID)
+        self.saveGroups()
 
 
 lights = MoodLightingServer().run()
@@ -236,11 +231,19 @@ def client_info():
 
 @app.route("/lights/groups/addClient", methods=['POST'])
 def add_client_to_group():
-    print("Called")
     data = request.json
     id = data['clientID']
     groupID = data['groupID']
     lights.addToGroup(id, groupID)
+    return getJSONResponse()
+
+
+@app.route("/lights/groups/removeClient", methods=['POST'])
+def remove_client_from_group():
+    data = request.json
+    clientID = data['clientID']
+    groupID = data['groupID']
+    lights.removeFromGroup(clientID, groupID)
     return getJSONResponse()
 
 
