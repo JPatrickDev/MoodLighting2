@@ -273,7 +273,7 @@ public class Util {
         HashMap<String, Object> payload = new HashMap<>();
         payload.put("groupID",groupID);
         payload.put("clientID",clientID);
-        makeJSONRequest(activity,"lights/groups/addClient",payload);
+        makeJSONRequest(activity,"lights/groups/add",payload);
     }
 
     private static void API_createNewGroup(String group, Activity activity) {
@@ -300,7 +300,7 @@ public class Util {
         HashMap<String, Object> payload = new HashMap<>();
         payload.put("groupID",groupID);
         payload.put("clientID",clientID);
-        makeJSONRequest(activity, "lights/groups/removeClient", payload);
+        makeJSONRequest(activity, "lights/groups/remove", payload);
     }
 
     public interface GroupsCallback{

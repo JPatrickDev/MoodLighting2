@@ -328,7 +328,7 @@ def add_preset():
 
 
 @app.route("/lights/start/preset", methods=['POST'])
-def start_fade():
+def start_preset():
     data = request.json
     data['startTime'] = time.time()
     if "group" not in data:
