@@ -87,6 +87,13 @@ public class GroupsListAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.moodlighting_groups_group_name_list_item, parent, false);
             TextView clientName = (TextView) convertView.findViewById(R.id.moodlighting_groups_group_name_list_item_text);
             clientName.setText(groupName);
+            final String finalGroupID1 = groupID;
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                 Util.addClientToGroup(mContext, finalGroupID1);
+                }
+            });
             return convertView;
         }
     }

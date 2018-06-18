@@ -7,7 +7,9 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -223,6 +225,55 @@ public class Util {
                     }
                 })
                 .show();
+    }
+
+    public static void addClientToGroup(final Activity activity, final String groupID) {
+        final Spinner ipText = new Spinner(activity);
+        makeGETRequestWithResponse(activity, "lights/clients", new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray all = response.getJSONArray("all");
+                    if(all.length() == 0){
+
+                    }else {
+                        String[] out = new String[all.length()];
+                        for(int i = 0; i != out.length; i++){
+                            out[i] = all.get(i).toString();
+                        }
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity,
+                                android.R.layout.simple_spinner_item, out);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        ipText.setAdapter(adapter);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        new AlertDialog.Builder(activity)
+                .setTitle("Add client to group")
+                .setView(ipText)
+                .setPositiveButton("Add Client", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                      //  String group = ipText.getText().toString();
+                       // Util.API_createNewGroup(group,activity);
+                        String selected = ipText.getSelectedItem().toString();
+                        API_addClientToGroup(activity,groupID,selected);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                })
+                .show();
+    }
+
+    private static void API_addClientToGroup(Activity activity, String groupID, String clientID) {
+        HashMap<String, Object> payload = new HashMap<>();
+        payload.put("groupID",groupID);
+        payload.put("clientID",clientID);
+        makeJSONRequest(activity,"lights/groups/addClient",payload);
     }
 
     private static void API_createNewGroup(String group, Activity activity) {

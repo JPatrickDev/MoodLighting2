@@ -26,7 +26,7 @@ class Client():
         self.ip = ip
         self.show = None
         self.socket = socket.socket()
-        self.socket.connect((ip, 2705))
+        self.socket.connect((ip, port))
         self.socket.send((self.id + ":" + self.name).encode("utf8"))
         waiting = True
         while waiting:
@@ -47,9 +47,6 @@ class Client():
         print("Connection Established, running")
         serversocket = util.getServerSocket("0.0.0.0", 1202)
         i = ""
-        #r = requests.get(url='http://' + self.ip + ':2806/lights/info')
-        #r = (r.json())
-        #i = r['type']
         while 1:
             print(i)
             if i.startswith("FADE"):
