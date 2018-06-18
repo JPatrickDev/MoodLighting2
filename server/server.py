@@ -35,6 +35,8 @@ class MoodLightingServer:
         self.groups = []
         self.currentShow = {}
         self.loadGroups()
+        self.knownClients = []
+        self.loadClients()
 
     def waitForConnections(self):
         serversocket = util.getServerSocket("0.0.0.0", 2705)
@@ -45,6 +47,10 @@ class MoodLightingServer:
             data = data.split(":")
             id = data[0]
             name = data[1]
+            if id not in self.knownClients:
+                self.knownClients.append(id)
+                self.saveClients()
+            print(self.knownClients)
             clientObj = ConnectedClient(id, name, address)
             print(str(id) + ":" + str(name))
             self.queue.put(clientObj)
@@ -134,6 +140,10 @@ class MoodLightingServer:
         with open('groups.json', 'w') as outfile:
             json.dump([x.__dict__ for x in lights.groups], outfile)
 
+    def saveClients(self):
+        with open('clients.json', 'w') as outfile:
+            json.dump(lights.knownClients, outfile)
+
     def loadGroups(self):
         if not os.path.exists('groups.json'):
             return
@@ -144,6 +154,14 @@ class MoodLightingServer:
             for c in g['clients']:
                 grObj.clients.append(c)
             self.groups.append(grObj)
+
+    def loadClients(self):
+        if not os.path.exists('clients.json'):
+            return
+        with open('clients.json') as f:
+            data = json.load(f)
+        for knownClient in data:
+            self.knownClients.append(knownClient)
 
     def getIPByID(self, clientID):
         for c in self.clients:
@@ -226,7 +244,7 @@ def set_colour():
 @app.route("/lights/clients")
 def client_info():
     lights.updateIPS()
-    return json.dumps([x.__dict__ for x in lights.clients])
+    return json.dumps({"connected": [x.__dict__ for x in lights.clients], "all": lights.knownClients})
 
 
 @app.route("/lights/groups/addClient", methods=['POST'])
