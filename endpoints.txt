@@ -1,0 +1,23 @@
+A list of endpoints that can be used to communicate with the server - Used to build controllers
+
+[GET]  /lights/info
+[POST] /lights/start/fade
+[POST] /lights/stop
+[POST] /lights/setColor
+
+[GET]  /lights/clients
+[GET]  /lights/clients/groups
+
+[GET]  /lights/groups
+[POST] /lights/groups/add
+[POST] /lights/groups/remove
+[POST] /lights/groups/create
+
+[POST] /lights/start/fade
+[POST] /lights/start/flash
+[POST] /lights/start/preset
+
+[GET]  /lights/presets
+[POST] /lights/presets/create
+[POST] /lights/presets/delete
+[POST] /lights/presets/update

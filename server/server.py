@@ -237,6 +237,7 @@ def start_fade():
     return getJSONResponse()
 
 
+# TODO: Allow a get request that assumes group all
 @app.route("/lights/stop", methods=['POST'])
 def stop_show():
     data = request.json
@@ -261,7 +262,23 @@ def client_info():
     return json.dumps({"connected": [x.__dict__ for x in lights.clients], "all": lights.knownClients})
 
 
-@app.route("/lights/groups/addClient", methods=['POST'])
+@app.route("/lights/clients/groups")
+def get_groups_by_id():
+    cID = request.args.get('id')
+    groups = []
+    for g in lights.groups:
+        for client in g.clients:
+            if client == cID:
+                groups.append(g.groupID)
+    return json.dumps(groups)
+
+
+@app.route("/lights/groups")
+def list_groups():
+    return json.dumps([x.__dict__ for x in lights.groups])
+
+
+@app.route("/lights/groups/add", methods=['POST'])
 def add_client_to_group():
     data = request.json
     id = data['clientID']
@@ -270,7 +287,7 @@ def add_client_to_group():
     return getJSONResponse()
 
 
-@app.route("/lights/groups/removeClient", methods=['POST'])
+@app.route("/lights/groups/remove", methods=['POST'])
 def remove_client_from_group():
     data = request.json
     clientID = data['clientID']
@@ -298,32 +315,27 @@ def flash():
     return getJSONResponse()
 
 
-@app.route("/lights/groups")
-def list_groups():
-    return json.dumps([x.__dict__ for x in lights.groups])
-
-
-@app.route("/lights/getGroups")
-def get_groups_by_id():
-    cID = request.args.get('id')
-    groups = []
-    for g in lights.groups:
-        for client in g.clients:
-            if client == cID:
-                groups.append(g.groupID)
-    return json.dumps(groups)
-
-
 @app.route("/lights/presets")
 def list_presets():
     return json.dumps(lights.presets)
 
 
-@app.route("/lights/presets/add",methods={"POST"})
+@app.route("/lights/presets/create", methods={"POST"})
 def add_preset():
     data = request.json
     lights.presets.append(data)
     lights.savePresets()
+
+
+@app.route("/lights/start/preset", methods=['POST'])
+def start_fade():
+    data = request.json
+    data['startTime'] = time.time()
+    if "group" not in data:
+        data['group'] = "all"
+    stop_show()
+    lights.startFade(data)
+    return getJSONResponse()
 
 
 # TODO: Put something useful here.
