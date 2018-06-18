@@ -37,6 +37,8 @@ class MoodLightingServer:
         self.loadGroups()
         self.knownClients = []
         self.loadClients()
+        self.presets = []
+        self.loadPresets()
 
     def waitForConnections(self):
         serversocket = util.getServerSocket("0.0.0.0", 2705)
@@ -138,11 +140,15 @@ class MoodLightingServer:
 
     def saveGroups(self):
         with open('groups.json', 'w') as outfile:
-            json.dump([x.__dict__ for x in lights.groups], outfile)
+            json.dump([x.__dict__ for x in self.groups], outfile)
 
     def saveClients(self):
         with open('clients.json', 'w') as outfile:
-            json.dump(lights.knownClients, outfile)
+            json.dump(self.knownClients, outfile)
+
+    def savePresets(self):
+        with open('presets.json', 'w') as outfile:
+            json.dump(self.presets, outfile)
 
     def loadGroups(self):
         if not os.path.exists('groups.json'):
@@ -162,6 +168,14 @@ class MoodLightingServer:
             data = json.load(f)
         for knownClient in data:
             self.knownClients.append(knownClient)
+
+    def loadPresets(self):
+        if not os.path.exists('presets.json'):
+            return
+        with open('presets.json') as f:
+            data = json.load(f)
+        for preset in data:
+            self.presets.append(preset)
 
     def getIPByID(self, clientID):
         for c in self.clients:
@@ -298,6 +312,18 @@ def get_groups_by_id():
             if client == cID:
                 groups.append(g.groupID)
     return json.dumps(groups)
+
+
+@app.route("/lights/presets")
+def list_presets():
+    return json.dumps(lights.presets)
+
+
+@app.route("/lights/presets/add",methods={"POST"})
+def add_preset():
+    data = request.json
+    lights.presets.append(data)
+    lights.savePresets()
 
 
 # TODO: Put something useful here.

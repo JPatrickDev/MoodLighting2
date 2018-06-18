@@ -1,8 +1,5 @@
 import socket
 
-import select
-
-
 def getServerSocket(addr,port):
     serversocket = socket.socket(
         socket.AF_INET, socket.SOCK_STREAM)
