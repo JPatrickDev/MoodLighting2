@@ -215,6 +215,12 @@ class MoodLightingServer:
                     g.clients.remove(clientID)
         self.saveGroups()
 
+    def getPreset(self,id):
+        for p in self.presets:
+            if p['id'] == id:
+                return p
+        return None
+
 
 lights = MoodLightingServer().run()
 app = Flask(__name__)
@@ -327,6 +333,18 @@ def add_preset():
     lights.presets.append(data)
     lights.savePresets()
     return json.dumps({"id" : data['id']})
+
+
+@app.route("/lights/presets/delete", methods={"POST"})
+def delete_preset():
+    data = request.json
+    id = data['id']
+    p = lights.getPreset(id)
+    if p is None:
+        return json.dumps({"status" : "error"})
+    else:
+        lights.presets.remove(p)
+        return getJSONResponse()
 
 @app.route("/lights/start/preset", methods=['POST'])
 def start_preset():
