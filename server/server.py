@@ -323,9 +323,10 @@ def list_presets():
 @app.route("/lights/presets/create", methods={"POST"})
 def add_preset():
     data = request.json
+    data['id'] = getID([preset['id'] for preset in lights.presets])
     lights.presets.append(data)
     lights.savePresets()
-
+    return json.dumps({"id" : data['id']})
 
 @app.route("/lights/start/preset", methods=['POST'])
 def start_preset():
@@ -341,6 +342,14 @@ def start_preset():
 # TODO: Put something useful here.
 def getJSONResponse():
     return json.dumps({"status": "ok"})
+
+
+def getID(currentValues):
+    id = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=10))
+    if id in currentValues:
+        return getID()
+    else:
+        return id
 
 
 app.run('0.0.0.0', 2806, threaded=True)
