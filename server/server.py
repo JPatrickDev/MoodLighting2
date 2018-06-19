@@ -344,6 +344,7 @@ def delete_preset():
         return json.dumps({"status" : "error"})
     else:
         lights.presets.remove(p)
+        lights.savePresets()
         return getJSONResponse()
 
 @app.route("/lights/start/preset", methods=['POST'])
@@ -356,6 +357,17 @@ def start_preset():
     lights.startFade(data)
     return getJSONResponse()
 
+@app.route("/lights/presets/update", methods=['POST'])
+def update_preset():
+    data = request.json
+    id = data['id']
+    p = lights.getPreset(id)
+    if p is None:
+        return json.dumps({"status": "error"})
+    else:
+        del data['id']
+        p.update(data)
+        return getJSONResponse()
 
 # TODO: Put something useful here.
 def getJSONResponse():
