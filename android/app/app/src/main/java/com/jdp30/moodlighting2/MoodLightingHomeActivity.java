@@ -4,10 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.DisplayMetrics;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,13 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.GridView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.jdp30.moodlighting2.Adapters.HomeScreenAdapter;
 import com.jdp30.moodlighting2.Fragments.HomeScreenFragment;
-import com.jdp30.moodlighting2.Fragments.StartFadeFragment;
 
 import java.util.Stack;
 
@@ -40,7 +34,7 @@ public class MoodLightingHomeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         instance = this;
         requestQueue = Volley.newRequestQueue(this);
-        setContentView(R.layout.activity_mood_lighting_home);
+        setContentView(R.layout.moodlighting_activity_mood_lighting_home);
 
 
         DisplayMetrics metrics = new DisplayMetrics();

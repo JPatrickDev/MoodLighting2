@@ -18,20 +18,30 @@ import java.util.ArrayList;
  * Created by jackp on 30/03/2017.
  */
 public class ColorGridListAdapter extends BaseAdapter {
+    private int padding = 64;
     private Context mContext;
-
+    private boolean showAddButton = true;
     public ArrayList<Integer> colors = new ArrayList<Integer>();
 
     public ColorGridListAdapter(Context c) {
         mContext = c;
     }
 
+    public ColorGridListAdapter(Context c, int padding) {
+        this(c);
+        showAddButton = false;
+        this.padding = padding;
+    }
+
     public int getCount() {
-        return colors.size() + 1;
+        if (showAddButton)
+            return colors.size() + 1;
+        else
+            return colors.size();
     }
 
     public Object getItem(int position) {
-        return null;
+        return colors.get(position);
     }
 
     public long getItemId(int position) {
@@ -39,10 +49,10 @@ public class ColorGridListAdapter extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (position == colors.size()) {
+        if (position == colors.size() && showAddButton) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.moodlighting_add_color_grid_element, parent, false);
-            convertView.setMinimumHeight(64);
-            convertView.setPadding(64, 64, 64, 64);
+            convertView.setMinimumHeight(padding);
+            convertView.setPadding(padding, padding, padding, padding);
             return convertView;
         }
         ImageView imageView;
@@ -50,7 +60,7 @@ public class ColorGridListAdapter extends BaseAdapter {
         imageView = new ImageView(mContext);
         imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setPadding(64, 64, 64, 64);
+        imageView.setPadding(padding, padding, padding, padding);
 
 
         imageView.setBackgroundColor(colors.get(position));

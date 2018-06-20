@@ -19,7 +19,10 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.jdp30.moodlighting2.Model.FadePreset;
 import com.jdp30.moodlighting2.Model.Group;
+import com.jdp30.moodlighting2.Model.Preset;
+import com.jdp30.moodlighting2.Model.PresetDeserializer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -303,7 +306,26 @@ public class Util {
         makeJSONRequest(activity, "lights/groups/remove", payload);
     }
 
+    public static void getPresets(final PresetsCallback callback, Activity a){
+        Response.Listener<JSONArray> response = new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                String data = response.toString();
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                gsonBuilder.registerTypeAdapter(Preset.class,new PresetDeserializer());
+                Gson gson = gsonBuilder.create();
+                List<Preset> presets = Arrays.asList(gson.fromJson(data, Preset[].class));
+                callback.callback(presets);
+            }
+        };
+        makeGETRequestWithResponseArray(a,"lights/presets",response);
+    }
+
     public interface GroupsCallback{
         void callback(List<Group> groups);
+    }
+
+    public interface PresetsCallback{
+        void callback(List<Preset> groups);
     }
 }

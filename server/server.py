@@ -221,6 +221,13 @@ class MoodLightingServer:
                 return p
         return None
 
+    def getDataFromPreset(self,id):
+        p = self.getPreset(id)
+        copy = p.copy()
+        del copy['id']
+        copy['startTime'] = time.time()
+        return copy
+
 
 lights = MoodLightingServer().run()
 app = Flask(__name__)
@@ -238,7 +245,7 @@ def start_fade():
     data['startTime'] = time.time()
     if "group" not in data:
         data['group'] = "all"
-    stop_show()
+   # stop_show()
     lights.startFade(data)
     return getJSONResponse()
 
@@ -307,7 +314,6 @@ def create_group():
     data = request.json
     name = data['groupName']
     lights.createGroup(name)
-
     return getJSONResponse()
 
 
@@ -347,15 +353,25 @@ def delete_preset():
         lights.savePresets()
         return getJSONResponse()
 
+
 @app.route("/lights/start/preset", methods=['POST'])
 def start_preset():
     data = request.json
-    data['startTime'] = time.time()
+    data = lights.getDataFromPreset(data['id'])
     if "group" not in data:
         data['group'] = "all"
-    stop_show()
-    lights.startFade(data)
-    return getJSONResponse()
+    #stop_show()
+    if data['type'] == "fade":
+        print(data)
+        lights.startFade(data)
+        return getJSONResponse()
+    elif data['type'] == "flash":
+        print(data)
+        lights.startFlash(data)
+        return getJSONResponse()
+    else:
+        json.dumps({"status": "error"})
+
 
 @app.route("/lights/presets/update", methods=['POST'])
 def update_preset():
@@ -377,7 +393,7 @@ def getJSONResponse():
 def getID(currentValues):
     id = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=10))
     if id in currentValues:
-        return getID()
+        return getID(currentValues)
     else:
         return id
 

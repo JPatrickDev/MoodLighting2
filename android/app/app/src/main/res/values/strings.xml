@@ -15,4 +15,6 @@
     <string name="moodligbting_set_ip">Set IP</string>
     <string name="moodlighting_add_group">Add New Group</string>
     <string name="moodlighting_groups">Groups</string>
+    <string name="moodlighting_add_preset">Add New Preset</string>
+    <string name="moodlighting_presets">Presets:</string>
 </resources>

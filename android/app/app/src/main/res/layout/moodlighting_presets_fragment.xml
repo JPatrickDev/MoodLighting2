@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 
     <TextView
         android:id="@+id/textView4"
@@ -8,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="@string/moodlighting_groups" />
+        android:text="@string/moodlighting_presets" />
 
     <Button
         android:id="@+id/moodlighting_preset_fragment_add_preset"
@@ -16,15 +21,19 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="@string/moodlighting_add_group" />
+        android:text="@string/moodlighting_add_preset" />
 
-    <ListView
-        android:id="@+id/moodlighting_groups_fragment_listview"
+    <GridView
+        android:id="@+id/moodlighting_preset_fragment_grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/moodlighting_preset_fragment_add_preset"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:numColumns="auto_fit"
+        android:horizontalSpacing="5dp"
+        android:verticalSpacing="5dp"
+        android:layout_margin="10dp"
         android:layout_below="@+id/textView4" />
 
 </RelativeLayout>

@@ -1,20 +1,15 @@
 package com.jdp30.moodlighting2.Adapters;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Point;
-import android.os.Build;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jdp30.moodlighting2.Fragments.GroupsFragment;
+import com.jdp30.moodlighting2.Fragments.PresetsFragment;
 import com.jdp30.moodlighting2.Fragments.SetColorFragment;
 import com.jdp30.moodlighting2.Fragments.StartFadeFragment;
 import com.jdp30.moodlighting2.MoodLightingHomeActivity;
@@ -52,7 +47,7 @@ public class HomeScreenAdapter extends BaseAdapter implements View.OnClickListen
     public View getView(int position, View convertView, ViewGroup parent) {
         Card card = getItem(position);
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.home_screen_card_layout, parent, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.moodlighting_home_screen_card_layout, parent, false);
         }
 
         TextView text = (TextView) convertView.findViewById(R.id.home_screen_card_layout_text);
@@ -76,6 +71,8 @@ public class HomeScreenAdapter extends BaseAdapter implements View.OnClickListen
             Util.API_toggleLight(mContext,"40,40,40");
         }else if(text.equalsIgnoreCase("Groups")){
             MoodLightingHomeActivity.instance.setCurrentFragment(new GroupsFragment());
+        }else if(text.equalsIgnoreCase("Presets")){
+            MoodLightingHomeActivity.instance.setCurrentFragment(new PresetsFragment());
         }
     }
 }

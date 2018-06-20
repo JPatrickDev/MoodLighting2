@@ -14,10 +14,8 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.SeekBar;
-import android.widget.Toast;
 
 import com.jdp30.moodlighting2.Adapters.ColorGridListAdapter;
-import com.jdp30.moodlighting2.Adapters.HomeScreenAdapter;
 import com.jdp30.moodlighting2.R;
 import com.jdp30.moodlighting2.Util;
 import com.jdp30.moodlighting2.Views.ColorSelectorView;
@@ -33,7 +31,7 @@ public class StartFadeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         adapter = new ColorGridListAdapter(this.getActivity());
-        final View v = inflater.inflate(R.layout.fragment_start_fade, container, false);
+        final View v = inflater.inflate(R.layout.moodlighting_fragment_start_fade, container, false);
 
         ((GridView) v.findViewById(R.id.color_grid)).setAdapter(adapter);
 
