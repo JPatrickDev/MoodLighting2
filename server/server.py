@@ -385,6 +385,11 @@ def update_preset():
         p.update(data)
         return getJSONResponse()
 
+@app.route("/lights/status")
+def status():
+    lights.updateIPS()
+    return "{\"clients\" : " + client_info() + ",\"show\" : " + info() + "}"
+
 # TODO: Put something useful here.
 def getJSONResponse():
     return json.dumps({"status": "ok"})
