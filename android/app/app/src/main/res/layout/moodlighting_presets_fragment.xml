@@ -15,14 +15,6 @@
         android:layout_centerHorizontal="true"
         android:text="@string/moodlighting_presets" />
 
-    <Button
-        android:id="@+id/moodlighting_preset_fragment_add_preset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/moodlighting_add_preset" />
-
     <GridView
         android:id="@+id/moodlighting_preset_fragment_grid_view"
         android:layout_width="match_parent"

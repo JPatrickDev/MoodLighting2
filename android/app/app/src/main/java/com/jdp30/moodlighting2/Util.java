@@ -306,6 +306,11 @@ public class Util {
         makeJSONRequest(activity, "lights/groups/remove", payload);
     }
 
+    public static void API_startPreset(String presetID,Activity activity){
+        HashMap<String, Object> payload = new HashMap<>();
+        payload.put("id",presetID);
+        makeJSONRequest(activity, "lights/start/preset", payload);
+    }
     public static void getPresets(final PresetsCallback callback, Activity a){
         Response.Listener<JSONArray> response = new Response.Listener<JSONArray>() {
             @Override

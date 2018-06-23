@@ -45,7 +45,7 @@ public class PresetListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         Preset p = getItem(position);
         if (p instanceof FadePreset) {
-            FadePreset preset = (FadePreset) p;
+            final FadePreset preset = (FadePreset) p;
             convertView = LayoutInflater.from(mContext).inflate(R.layout.moodlighting_fade_preset_list_item_layout, parent, false);
             ColorGridListAdapter adapter = new ColorGridListAdapter(mContext, 16);
             adapter.colors = preset.getColors();
@@ -54,7 +54,12 @@ public class PresetListAdapter extends BaseAdapter {
             ((TextView) convertView.findViewById(R.id.moodlighting_fade_preset_name)).setText(preset.getName());
             ((TextView) convertView.findViewById(R.id.moodlighting_fade_preset_list_item_pause_time)).setText("Pause: " + preset.getPauseTime() + "s");
             ((TextView) convertView.findViewById(R.id.moodlighting_fade_preset_list_item_fade_time)).setText("Fade: " + preset.getFadeTime() + "s");
-
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Util.API_startPreset(preset.getId(),mContext);
+                }
+            });
         }
         return convertView;
 
