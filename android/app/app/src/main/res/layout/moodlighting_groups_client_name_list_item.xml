@@ -7,6 +7,5 @@
         android:id="@+id/moodlighting_groups_client_name_list_item_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="100px"
         android:text="TextView" />
 </LinearLayout>

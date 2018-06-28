@@ -3,11 +3,15 @@ package com.jdp30.moodlighting2.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.jdp30.moodlighting2.Model.Group;
@@ -21,81 +25,34 @@ import java.util.List;
  * Created by jackp on 30/03/2017.
  */
 public class GroupsListAdapter extends BaseAdapter {
-    private Activity mContext;
+    private Activity activity;
 
     public List<Group> groups;
 
     public GroupsListAdapter(Activity c) {
-        mContext = c;
+        activity = c;
     }
 
     public int getCount() {
-        int i = groups.size();
-        for (Group g : groups) {
-            i += g.getClients().size();
-        }
-        return i;
+        return groups.size();
     }
 
-    public Object getItem(int position) {
-        return null;
+    public Group getItem(int position) {
+        return groups.get(position);
     }
 
     public long getItemId(int position) {
-        return 0;
+        return groups.get(position).getGroupID().hashCode();
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        int i = 0;
-        int gP = 0;
-        String clientID = null;
-        String groupID = null;
-        String groupName = null;
-        while (gP < groups.size()) {
-            Group g = groups.get(gP);
-            if (i == position) {
-                groupID = g.getGroupID();
-                groupName = g.getName();
-                break;
-            }
-            for (String s : g.getClients()) {
-                i++;
-                if (i == position) {
-                    clientID = s;
-                    groupID = g.getGroupID();
-                    groupName = g.getName();
-                    break;
-                }
-            }
-            i++;
-            gP++;
-        }
-        if (clientID != null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.moodlighting_groups_client_name_list_item, parent, false);
-            TextView clientName = (TextView) convertView.findViewById(R.id.moodlighting_groups_client_name_list_item_text);
-            clientName.setText(clientID);
-            final String finalClientID = clientID;
-            final String finalGroupID = groupID;
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Util.API_removeClientFromGroup(finalClientID, finalGroupID,mContext);
-                }
-            });
-            return convertView;
-        } else {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.moodlighting_groups_group_name_list_item, parent, false);
-            TextView clientName = (TextView) convertView.findViewById(R.id.moodlighting_groups_group_name_list_item_text);
-            clientName.setText(groupName);
-            final String finalGroupID1 = groupID;
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                 Util.addClientToGroup(mContext, finalGroupID1);
-                }
-            });
-            return convertView;
-        }
+        convertView = LayoutInflater.from(activity).inflate(R.layout.moodlighting_groups_grid_item, parent, false);
+        TextView name = (TextView) convertView.findViewById(R.id.moodlighting_groups_grid_item_name);
+        name.setText(getItem(position).getName());
+        ListView v = (ListView) convertView.findViewById(R.id.moodlighting_groups_grid_item_list);
+        v.setAdapter(new ClientListAdapter(activity,getItem(position).getClients()));
+        return convertView;
+
     }
 
 }
