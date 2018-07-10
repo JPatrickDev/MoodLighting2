@@ -14,7 +14,7 @@ myIp = gethostbyname(gethostname())
 print(getID([]))
 
 s=socket(AF_INET, SOCK_DGRAM)
-s.bind(('',54545))
+s.bind(('',7181))
 while 1:
     m=s.recvfrom(1024)
     result = m[0].decode("utf8")
@@ -22,6 +22,6 @@ while 1:
     if result.startswith("0xA91"):
         ip = result.split(":")[1]
         print("Discovered by: " + str(ip))
-        socket = socket()
-        socket.connect((ip,2705))
-        socket.send(("0xA91:" + str(myIp)).encode("utf8"))
+        soc = socket()
+        soc.connect((ip,7182))
+        soc.send(("0xA91:" + str(myIp)).encode("utf8"))

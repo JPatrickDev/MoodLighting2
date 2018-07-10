@@ -23,14 +23,15 @@ myIp = gethostbyname(gethostname())
 cs = socket(2, 2)
 cs.setsockopt(65535, 4, 1)
 cs.setsockopt(65535, 32, 1)
-cs.sendto(('0xA91:' + str(myIp)).encode("utf8"), ('255.255.255.255', 54545))
-socket = getServerSocket("0.0.0.0",2705)
+cs.sendto(('0xA91:' + str(myIp)).encode("utf8"), ('255.255.255.255', 7181))
+socket = getServerSocket("0.0.0.0",7182)
 
 discovered = []
 while 1:
     try:
         input = waitForData(socket)
-    except Exception:
+    except Exception as e:
+        print(e)
         break
     print(input)
     if input.startswith("0xA91"):
