@@ -1,4 +1,3 @@
-# https://stackoverflow.com/questions/18080094/how-to-make-a-server-discoverable-to-lan-clients
 import json
 import random
 import socket
@@ -40,6 +39,20 @@ class MoodLightingServer:
         self.presets = []
         self.loadPresets()
 
+	def waitForDiscoveryRequests(self):
+		myIp = socket.gethostbyname(socket.gethostname())
+		s = socket(socket.AF_INET,socket.SOCK_DGRAM)
+		s.bind(('',7181))
+		while True:
+			data = s.recvfrom(1024)
+			result = data[0].decode("utf8")
+			if result.startswith("0xA91"):
+				ip = result.split(":")[1]
+				print("Discovered by" + str(ip))	
+				soc = socket()
+				soc.connect((ip,7182))
+				soc.send(("0xA91:" + str(myIp)).encode("utf8"))
+				
     def waitForConnections(self):
         serversocket = util.getServerSocket("0.0.0.0", 2705)
         while 1:
@@ -62,6 +75,10 @@ class MoodLightingServer:
         t = threading.Thread(target=self.waitForConnections)
         t.daemon = False
         t.start()
+        
+        d = threading.Thread(target=self.waitForDiscoveryRequests)
+        d.daemon = False
+        d.start()
         return self
 
     def updateIPS(self):
