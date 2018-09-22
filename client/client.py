@@ -39,6 +39,7 @@ class Client():
                         waiting = False
                     else:
                         out = data.decode("utf8")
+                        print("Replied")
                         print(out)
                         waiting = False
                         self.run()
@@ -120,8 +121,11 @@ class Client():
         flash.run(float(r['data']['startTime']), float(r['data']['duration']), color , r['data']['fade'],r['data']['repeat'])
 
     def getGroups(self):
-        r = requests.get(url='http://' + self.ip + ':2806/lights/getGroups?id=' + self.id)
-        r = (r.json())
+        r = requests.get(url='http://' + self.ip + ':2806/lights/clients/getGroups?id=' + self.id)
+        try:
+            r = (r.json())
+        except Exception:
+            return "all"
         if r.__len__() is not 0:
             return r
         return "all"
@@ -134,4 +138,4 @@ class Client():
         #self.pi.set_PWM_dutycycle(self.bPin, result.b)
 
 
-Client().connect("192.168.0.177")
+Client().connect("192.168.0.129")

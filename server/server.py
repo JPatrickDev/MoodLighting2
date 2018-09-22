@@ -39,23 +39,24 @@ class MoodLightingServer:
         self.presets = []
         self.loadPresets()
 
-	def waitForDiscoveryRequests(self):
-		myIp = socket.gethostbyname(socket.gethostname())
-		s = socket(socket.AF_INET,socket.SOCK_DGRAM)
-		s.bind(('',7181))
-		while True:
-			data = s.recvfrom(1024)
-			result = data[0].decode("utf8")
-			if result.startswith("0xA91"):
-				ip = result.split(":")[1]
-				print("Discovered by" + str(ip))	
-				soc = socket()
-				soc.connect((ip,7182))
-				soc.send(("0xA91:" + str(myIp)).encode("utf8"))
-				
+    def waitForDiscoveryRequests(self):
+            myIp = socket.gethostbyname(socket.gethostname())
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.bind(('', 7181))
+            while True:
+                data = s.recvfrom(1024)
+                result = data[0].decode("utf8")
+                if result.startswith("0xA91"):
+                    ip = result.split(":")[1]
+                    print("Discovered by" + str(ip))
+                    soc = socket.socket()
+                    soc.connect((ip, 7182))
+                    soc.send(("0xA91:" + str(myIp)).encode("utf8"))
+
     def waitForConnections(self):
         serversocket = util.getServerSocket("0.0.0.0", 2705)
         while 1:
+            print("Waiting for connection")
             (clientsocket, address) = serversocket.accept()
             print("Connected: " + str(address))
             data = clientsocket.recv(2048).decode("utf8")
