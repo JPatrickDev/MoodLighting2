@@ -80,6 +80,21 @@ class Client():
                 self.t = threading.Thread(target=self.doFlash, args={json.dumps(r)})
                 self.t.daemon = False
                 self.t.start()
+            if i.startswith("BEAT"):
+                # TODO: Maybe it should resume the previous show once the flash has stopped?
+                if self.show is not None:
+                    self.show.stop()
+                r = requests.get(url='http://' + self.ip + ':2806/lights/info')
+                r = (r.json())
+                print(r)
+                self.t = threading.Thread(target=self.startBeat, args={json.dumps(r)})
+                self.t.daemon = False
+                self.t.start()
+            if i.startswith("SONG_PAUSED") and isinstance(self.show,BeatShow):
+                if self.show is not None:
+                    self.show.stop()
+            if i.startswith("NEXT_SONG"):
+                pass
             i = util.waitForData(serversocket)
 
     def startFade(self, r):
@@ -101,6 +116,22 @@ class Client():
             cD = col.split(",")
             c.append(ColorResult(int(cD[0]), int(cD[1]), int(cD[2])))
         fade.run(float(r['data']['startTime']), float(r['data']['pauseTime']), float(r['data']['fadeTime']), c)
+
+    def startBeat(self, r):
+ #       g = self.getGroups()
+ #       r = json.loads(r)
+  #      found = False
+   #     for group in g:
+    #        if group in r:
+     #           r = r[group]
+      #          found = True
+       #         break
+#       # if not found:
+         #   r = r['all']
+        #print(r)
+        beat = BeatShow(self)
+        self.show = beat
+        beat.run(0.1, ColorResult(255,0,0), ColorResult(0,0,0), "192.168.0.100:9999")
 
     def doFlash(self,r):
         g = self.getGroups()
@@ -138,4 +169,4 @@ class Client():
         #self.pi.set_PWM_dutycycle(self.bPin, result.b)
 
 
-Client().connect("192.168.0.129")
+Client().connect("localhost")

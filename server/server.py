@@ -39,6 +39,7 @@ class MoodLightingServer:
         self.presets = []
         self.loadPresets()
 
+
     def waitForDiscoveryRequests(self):
             myIp = socket.gethostbyname(socket.gethostname())
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -112,6 +113,14 @@ class MoodLightingServer:
             return
         self.currentShow[data['group']] = {"type": "FLASH", "data": data}
         self.removeDead(self.sendToGroup("FLASH", data['group']))
+
+    def startBeat(self,data):
+        self.updateIPS()
+     #   if data['group'] in self.currentShow and self.currentShow[data['group']]['type'] is not "NONE":
+     #       return
+     #   self.currentShow[data['group']] = {"type": "BEAT", "data": data}
+     #   self.removeDead(self.sendToGroup("BEAT", data['group']))
+        self.removeDead(self.sendToGroup("BEAT", "all"))
 
     def setColor(self, data):
         self.updateIPS()
@@ -344,6 +353,11 @@ def flash():
     lights.startFlash(data)
     return getJSONResponse()
 
+@app.route("/lights/start/beat")
+def beat():
+    lights.startBeat({})
+    return getJSONResponse()
+
 
 @app.route("/lights/presets")
 def list_presets():
@@ -407,6 +421,15 @@ def update_preset():
 def status():
     lights.updateIPS()
     return "{\"clients\" : " + client_info() + ",\"show\" : " + info() + "}"
+
+
+@app.route("/lights/beat_stopped")
+def beat_stopped():
+    return getJSONResponse()
+
+@app.route("/lights/beat_next")
+def beat_next():
+    return getJSONResponse()
 
 # TODO: Put something useful here.
 def getJSONResponse():
