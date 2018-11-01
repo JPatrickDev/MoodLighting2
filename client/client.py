@@ -90,11 +90,12 @@ class Client():
                 self.t = threading.Thread(target=self.startBeat, args={json.dumps(r)})
                 self.t.daemon = False
                 self.t.start()
-            if i.startswith("SONG_PAUSED") and isinstance(self.show,BeatShow):
+            if i.startswith("_BEAT_STOPPED") and isinstance(self.show,BeatShow):
                 if self.show is not None:
                     self.show.stop()
-            if i.startswith("NEXT_SONG"):
-                pass
+            if i.startswith("_BEAT_START") and isinstance(self.show,BeatShow):
+                if self.show is not None:
+                    self.show.run(0.1, ColorResult(255, 0, 0), ColorResult(0, 0, 0), "192.168.0.100:9999")
             i = util.waitForData(serversocket)
 
     def startFade(self, r):

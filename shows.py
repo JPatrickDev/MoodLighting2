@@ -126,6 +126,7 @@ class BeatShow:
     def __init__(self, parent):
         self.parent = parent
         self.running = False
+        self.currentSong = ""
 
     def run(self, beatDuration, beatColor, pauseColor, musicServerIP):
         self.running = True
@@ -141,16 +142,26 @@ class BeatShow:
         while self.running:
             if self.songStart is None:
                 self.getLatestBeatData()
-                if self.beatArray.__len__() > 0:
-                    currentPos = 0
-                    nextBeat = self.beatArray[0]
+                if self.songStart is not None:
+                    currentTime = time.time() - self.songStart
+                    self.beatArray = [x for x in self.beatArray if x >= currentTime]
+                    if self.beatArray.__len__() > 0:
+                        currentPos = 0
+                        nextBeat = self.beatArray[0]
             beatStart = nextBeat - self.beatDuration / 2
             beatEnd = nextBeat + self.beatDuration / 2
             currentTime = time.time() - self.songStart
-            print(str(currentTime))
             if beatStart <= currentTime <= beatEnd:
-                print("During beat")
-                self.setColor(self.beatColor)
+                if currentTime < nextBeat:
+                    currentBeatPos = currentTime - beatStart
+                    currentColor = self.interp(self.pauseColor, self.beatColor, currentBeatPos, self.beatDuration / 2)
+                    self.setColor(currentColor)
+                elif currentTime > nextBeat:
+                    currentBeatPos = currentTime - nextBeat
+                    currentColor = self.interp(self.beatColor, self.pauseColor, currentBeatPos, self.beatDuration / 2)
+                    self.setColor(currentColor)
+                else:
+                    self.setColor(self.beatColor)
             else:
                 print("Not beat")
                 self.setColor(self.pauseColor)
@@ -165,13 +176,16 @@ class BeatShow:
                     currentPos = -1
                     self.songStart = None
                     self.beatArray = []
-
+                    time.sleep(5)
 
     def getLatestBeatData(self):
         self.songStart = None
         self.beatArray = []
         with urllib.request.urlopen("http://" + str(self.musicServerIP) + "/music/beat") as url:
             data = json.loads(url.read().decode())
+            if self.currentSong == data['song']:
+                return
+            self.currentSong = data['song']
             self.songStart = data['started']
             self.beatArray = data['timestamps']
 

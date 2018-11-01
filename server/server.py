@@ -255,6 +255,12 @@ class MoodLightingServer:
         copy['startTime'] = time.time()
         return copy
 
+    def beat_start(self):
+        self.sendToGroup("_BEAT_START","all")
+
+    def beat_stopped(self):
+        self.sendToGroup("_BEAT_STOPPED", "all")
+
 
 lights = MoodLightingServer().run()
 app = Flask(__name__)
@@ -425,11 +431,15 @@ def status():
 
 @app.route("/lights/beat_stopped")
 def beat_stopped():
+    lights.beat_stopped()
     return getJSONResponse()
 
-@app.route("/lights/beat_next")
-def beat_next():
+
+@app.route("/lights/beat_start")
+def beat_start():
+    lights.beat_start()
     return getJSONResponse()
+
 
 # TODO: Put something useful here.
 def getJSONResponse():
