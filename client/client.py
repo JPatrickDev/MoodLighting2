@@ -94,7 +94,7 @@ class Client():
                 if self.show is not None:
                     self.show.stop()
             if i.startswith("_BEAT_START") and isinstance(self.show,BeatShow):
-                if self.show is not None:
+                if self.show is not None and self.show.running:
                     self.show.run(0.1, ColorResult(255, 0, 0), ColorResult(0, 0, 0), "192.168.0.100:9999")
             i = util.waitForData(serversocket)
 
